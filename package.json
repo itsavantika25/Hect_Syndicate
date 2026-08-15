@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch server/index.ts",
-    "start": "tsx server/index.ts",
+    "start": "node dist/server/index.js",
     "build": "tsc",
     "vercel-build": "tsc && node scripts/prepare-vercel-output.mjs",
     "seed": "tsx server/seed.ts"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

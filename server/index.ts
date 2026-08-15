@@ -75,6 +75,6 @@ io.on('connection', (socket) => {
 
 const PORT = Number(process.env.PORT) || 3000;
 
-httpServer.listen(PORT, () => {
-  console.log(`HCET Syndicate server running at http://localhost:${PORT}`);
+httpServer.listen(PORT, '0.0.0.0', () => {
+  console.log(`HCET Syndicate server running on port ${PORT}`);
 });

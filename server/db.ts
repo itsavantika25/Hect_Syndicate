@@ -5,9 +5,10 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = process.env.VERCEL
-  ? path.join('/tmp', 'hcet-data')
-  : path.join(__dirname, '..', 'data');
+const DATA_DIR = process.env.DATA_DIR
+  ?? (process.env.VERCEL
+    ? path.join('/tmp', 'hcet-data')
+    : path.join(process.cwd(), 'data'));
 const DB_PATH = path.join(DATA_DIR, 'hcet.db');
 
 if (!fs.existsSync(DATA_DIR)) {
