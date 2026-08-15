@@ -17,7 +17,7 @@ import { createSafeHousesRouter } from './routes/safeHouses.js';
 import { createLogsRouter } from './routes/logs.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.join(__dirname, '..');
+const ROOT = process.cwd();
 const DATA_DIR = path.join(ROOT, 'data');
 
 if (!fs.existsSync(DATA_DIR)) {
