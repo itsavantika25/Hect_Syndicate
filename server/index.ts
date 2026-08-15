@@ -3,11 +3,18 @@ import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 import { createApp } from './app.js';
 import { socketAuth } from './auth.js';
 
-const ROOT = process.cwd();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// In production (dist/server/index.js), ROOT is two levels up from __dirname.
+// In dev (server/index.ts via tsx), ROOT is one level up.
+// Using __dirname is reliable on Railway; process.cwd() can vary.
+const ROOT = path.resolve(__dirname, '../../');
 const DATA_DIR = path.join(ROOT, 'data');
 
 if (!fs.existsSync(DATA_DIR)) {
@@ -16,12 +23,14 @@ if (!fs.existsSync(DATA_DIR)) {
 
 const onlineUsers = new Map<string, { name: string; role: string; connectedAt: string }>();
 
-// Create Express app first — it becomes the sole HTTP request listener.
-// Socket.io intercepts /socket.io/* paths before Express sees them.
-// Using createServer() + httpServer.on('request', app) causes both
-// Socket.io AND Express to handle the same polling requests → ERR_HTTP_HEADERS_SENT.
-const tempApp = express();
-const httpServer = createServer(tempApp);
+// ── Standard Socket.io + Express pattern ─────────────────────────────────────
+// Pass the Express app directly into createServer() so it is the sole HTTP
+// request listener. Socket.io then intercepts its /socket.io/* requests
+// before they reach Express. The old pattern of createServer() +
+// httpServer.on('request', app) caused BOTH to handle every request →
+// ERR_HTTP_HEADERS_SENT on every Socket.io polling call.
+const app = express();
+const httpServer = createServer(app);
 
 const io = new SocketServer(httpServer, {
   cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] },
@@ -29,18 +38,19 @@ const io = new SocketServer(httpServer, {
   transports: ['polling', 'websocket'],
 });
 
-const app = createApp(io, () => onlineUsers.size);
+// Mount all /api/* routes
+const apiApp = createApp(io, () => onlineUsers.size);
+app.use(apiApp);
 
-// Mount API routes onto the HTTP listener
-tempApp.use(app);
+// Serve static files (HTML, CSS, JS) from the project root
+app.use(express.static(ROOT));
 
-// Serve static assets and the login page
-tempApp.use(express.static(ROOT));
-
-tempApp.get('/', (_req, res) => {
+// Default route → login page
+app.get('/', (_req, res) => {
   res.sendFile(path.join(ROOT, 'login.html'));
 });
 
+// ── Socket.io auth middleware ─────────────────────────────────────────────────
 io.use((socket, next) => {
   const user = socketAuth(socket);
   if (!user) {
@@ -51,6 +61,7 @@ io.use((socket, next) => {
   next();
 });
 
+// ── Socket.io connection handlers ────────────────────────────────────────────
 io.on('connection', (socket) => {
   const user = socket.data.user as { userId: number; name: string; role: string };
   onlineUsers.set(socket.id, { name: user.name, role: user.role, connectedAt: new Date().toISOString() });
@@ -84,6 +95,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// ── Start ─────────────────────────────────────────────────────────────────────
 const PORT = Number(process.env.PORT) || 3000;
 
 httpServer.listen(PORT, '0.0.0.0', () => {

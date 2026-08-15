@@ -1,0 +1,12 @@
+# nixpacks.toml — Railway build configuration
+# Without this, Railway uses --omit=dev during install, so TypeScript
+# (a devDependency) is missing when 'npm run build' tries to run 'tsc'.
+
+[phases.install]
+cmds = ["npm install"]   # full install (includes devDeps needed for tsc)
+
+[phases.build]
+cmds = ["npm run build"] # tsc → compiles server/ to dist/
+
+[start]
+cmd = "npm start"        # node dist/server/index.js
