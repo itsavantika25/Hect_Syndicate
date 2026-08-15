@@ -72,16 +72,29 @@ function connectSocket() {
   const token = getToken();
   if (!token) return null;
 
-  socket = io({ auth: { token } });
+  // Railway's proxy doesn't support WebSocket upgrades reliably.
+  // Use polling transport which works through any HTTP reverse proxy.
+  socket = io({
+    auth: { token },
+    transports: ['polling'],
+    upgrade: false,
+    reconnection: true,
+    reconnectionAttempts: 10,
+    reconnectionDelay: 2000,
+  });
 
   socket.on('connect', () => {
     emit('socket:connected');
     if (lastPresence) emit('presence:update', lastPresence);
   });
 
-  socket.on('connect_error', () => {
-    sessionStorage.removeItem(TOKEN_KEY);
-    window.location.href = 'login.html';
+  socket.on('connect_error', (err) => {
+    console.warn('[HCET] Socket connect error:', err.message);
+    // Only redirect on auth errors, not transport errors
+    if (err.message === 'Unauthorized') {
+      sessionStorage.removeItem(TOKEN_KEY);
+      window.location.href = 'login.html';
+    }
   });
 
   const events = [

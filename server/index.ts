@@ -19,6 +19,10 @@ const onlineUsers = new Map<string, { name: string; role: string; connectedAt: s
 const httpServer = createServer();
 const io = new SocketServer(httpServer, {
   cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] },
+  // Railway's reverse proxy doesn't support WebSocket upgrades.
+  // Allow EIO3 clients and keep transports broad for compatibility.
+  allowEIO3: true,
+  transports: ['polling', 'websocket'],
 });
 
 const app = createApp(io, () => onlineUsers.size);
