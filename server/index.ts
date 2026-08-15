@@ -16,21 +16,28 @@ if (!fs.existsSync(DATA_DIR)) {
 
 const onlineUsers = new Map<string, { name: string; role: string; connectedAt: string }>();
 
-const httpServer = createServer();
+// Create Express app first — it becomes the sole HTTP request listener.
+// Socket.io intercepts /socket.io/* paths before Express sees them.
+// Using createServer() + httpServer.on('request', app) causes both
+// Socket.io AND Express to handle the same polling requests → ERR_HTTP_HEADERS_SENT.
+const tempApp = express();
+const httpServer = createServer(tempApp);
+
 const io = new SocketServer(httpServer, {
   cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] },
-  // Railway's reverse proxy doesn't support WebSocket upgrades.
-  // Allow EIO3 clients and keep transports broad for compatibility.
   allowEIO3: true,
   transports: ['polling', 'websocket'],
 });
 
 const app = createApp(io, () => onlineUsers.size);
-httpServer.on('request', app);
 
-app.use(express.static(ROOT));
+// Mount API routes onto the HTTP listener
+tempApp.use(app);
 
-app.get('/', (_req, res) => {
+// Serve static assets and the login page
+tempApp.use(express.static(ROOT));
+
+tempApp.get('/', (_req, res) => {
   res.sendFile(path.join(ROOT, 'login.html'));
 });
 
