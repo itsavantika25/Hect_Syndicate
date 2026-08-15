@@ -1,22 +1,12 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
-import cors from 'cors';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import fs from 'fs';
 
-import { initSchema, seedDatabase } from './db.js';
+import { createApp } from './app.js';
 import { socketAuth } from './auth.js';
-import authRouter from './routes/auth.js';
-import { createOperativesRouter } from './routes/operatives.js';
-import { createMissionsRouter } from './routes/missions.js';
-import alertsRouter from './routes/alerts.js';
-import { createRecruitsRouter } from './routes/recruits.js';
-import { createSafeHousesRouter } from './routes/safeHouses.js';
-import { createLogsRouter } from './routes/logs.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = process.cwd();
 const DATA_DIR = path.join(ROOT, 'data');
 
@@ -24,33 +14,21 @@ if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-initSchema();
-seedDatabase();
+const onlineUsers = new Map<string, { name: string; role: string; connectedAt: string }>();
 
-const app = express();
-const httpServer = createServer(app);
+const httpServer = createServer();
 const io = new SocketServer(httpServer, {
   cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] },
 });
 
-app.use(cors());
-app.use(express.json());
-
-app.use('/api/auth', authRouter);
-app.use('/api/operatives', createOperativesRouter(io));
-app.use('/api/missions', createMissionsRouter(io));
-app.use('/api/alerts', alertsRouter);
-app.use('/api/recruits', createRecruitsRouter(io));
-app.use('/api/safe-houses', createSafeHousesRouter(io));
-app.use('/api/logs', createLogsRouter(io, () => onlineUsers.size));
+const app = createApp(io, () => onlineUsers.size);
+httpServer.on('request', app);
 
 app.use(express.static(ROOT));
 
 app.get('/', (_req, res) => {
   res.sendFile(path.join(ROOT, 'login.html'));
 });
-
-const onlineUsers = new Map<string, { name: string; role: string; connectedAt: string }>();
 
 io.use((socket, next) => {
   const user = socketAuth(socket);

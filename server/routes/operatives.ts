@@ -19,7 +19,7 @@ function rowToOperative(row: Record<string, unknown>) {
   };
 }
 
-export function createOperativesRouter(io: SocketServer) {
+export function createOperativesRouter(io: SocketServer | null) {
   router.get('/', authMiddleware, (_req, res) => {
     const rows = db.prepare('SELECT * FROM operatives ORDER BY id').all() as Record<string, unknown>[];
     res.json(rows.map(rowToOperative));
@@ -48,7 +48,7 @@ export function createOperativesRouter(io: SocketServer) {
 
     const updated = db.prepare('SELECT * FROM operatives WHERE id = ?').get(req.params.id);
     const payload = rowToOperative(updated as Record<string, unknown>);
-    io.emit('operative:updated', payload);
+    io?.emit('operative:updated', payload);
     res.json(payload);
   });
 

@@ -5,7 +5,7 @@ import type { Server as SocketServer } from 'socket.io';
 
 const router = Router();
 
-export function createLogsRouter(io: SocketServer, getOnlineCount: () => number = () => 0) {
+export function createLogsRouter(io: SocketServer | null, getOnlineCount: () => number = () => 0) {
   router.get('/comms', authMiddleware, (_req, res) => {
     const rows = db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 50').all();
     res.json(rows.reverse());
@@ -25,7 +25,7 @@ export function createLogsRouter(io: SocketServer, getOnlineCount: () => number 
     );
 
     const log = db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 1').get();
-    io.emit('comms:purged', log);
+    io?.emit('comms:purged', log);
 
     res.json({ purged: true, log });
   });
@@ -44,7 +44,7 @@ export function createLogsRouter(io: SocketServer, getOnlineCount: () => number 
     `).run(type || 'sys', tag || '[CMD]', message.trim(), user.name);
 
     const log = db.prepare('SELECT * FROM comms_logs WHERE id = ?').get(result.lastInsertRowid);
-    io.emit('comms:new', log);
+    io?.emit('comms:new', log);
     res.status(201).json(log);
   });
 

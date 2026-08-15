@@ -5,7 +5,7 @@ import type { Server as SocketServer } from 'socket.io';
 
 const router = Router();
 
-export function createMissionsRouter(io: SocketServer) {
+export function createMissionsRouter(io: SocketServer | null) {
   router.get('/', authMiddleware, (_req, res) => {
     const rows = db.prepare('SELECT * FROM missions ORDER BY id').all();
     res.json(rows);
@@ -35,12 +35,12 @@ export function createMissionsRouter(io: SocketServer) {
     `).run(num, name, `OBJ: ${objective.trim()} // Assets: ${assetList}`, user.name.split(' ').map(n => n[0]).join('. ').toUpperCase());
 
     const mission = db.prepare('SELECT * FROM missions WHERE id = ?').get(result.lastInsertRowid);
-    io.emit('mission:created', mission);
+    io?.emit('mission:created', mission);
 
     db.prepare('INSERT INTO comms_logs (type, tag, message, operative) VALUES (?, ?, ?, ?)').run(
       'secure', '[PROTOCOL]', `New strategic protocol initiated: ${name}`, user.name
     );
-    io.emit('comms:new', db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 1').get());
+    io?.emit('comms:new', db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 1').get());
 
     res.status(201).json(mission);
   });

@@ -5,7 +5,7 @@ import type { Server as SocketServer } from 'socket.io';
 
 const router = Router();
 
-export function createRecruitsRouter(io: SocketServer) {
+export function createRecruitsRouter(io: SocketServer | null) {
   router.get('/', authMiddleware, (_req, res) => {
     const rows = db.prepare('SELECT * FROM recruits ORDER BY id').all();
     res.json(rows);
@@ -38,19 +38,19 @@ export function createRecruitsRouter(io: SocketServer) {
     `).run(requestId.toUpperCase(), location.toUpperCase(), force, user.name);
 
     const recruit = db.prepare('SELECT * FROM recruits WHERE id = ?').get(result.lastInsertRowid);
-    io.emit('recruit:created', recruit);
+    io?.emit('recruit:created', recruit);
 
     db.prepare('INSERT INTO comms_logs (type, tag, message, operative) VALUES (?, ?, ?, ?)').run(
       'secure', '[REQUEST]', `New vetting request: ${requestId.toUpperCase()} from ${location.toUpperCase()}.`, user.name
     );
-    io.emit('comms:new', db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 1').get());
+    io?.emit('comms:new', db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 1').get());
 
     db.prepare('INSERT INTO alerts (title, description, priority, icon, expires_at) VALUES (?, ?, ?, ?, ?)').run(
       'NEW RECRUIT SIGNAL DETECTED',
       `Vetting request ${requestId.toUpperCase()} submitted from ${location.toUpperCase()}.`,
       'low', 'info', new Date(Date.now() + 24 * 3600000).toISOString()
     );
-    io.emit('alert:created', db.prepare('SELECT * FROM alerts ORDER BY id DESC LIMIT 1').get());
+    io?.emit('alert:created', db.prepare('SELECT * FROM alerts ORDER BY id DESC LIMIT 1').get());
 
     res.status(201).json(recruit);
   });
@@ -69,7 +69,7 @@ export function createRecruitsRouter(io: SocketServer) {
     }
 
     const recruit = db.prepare('SELECT * FROM recruits WHERE id = ?').get(req.params.id);
-    io.emit('recruit:updated', recruit);
+    io?.emit('recruit:updated', recruit);
     res.json(recruit);
   });
 
@@ -82,12 +82,12 @@ export function createRecruitsRouter(io: SocketServer) {
     db.prepare("UPDATE recruits SET status = 'secure' WHERE status = 'pending'").run();
 
     const recruits = db.prepare('SELECT * FROM recruits ORDER BY id').all();
-    io.emit('recruits:sync', recruits);
+    io?.emit('recruits:sync', recruits);
 
     db.prepare('INSERT INTO comms_logs (type, tag, message, operative) VALUES (?, ?, ?, ?)').run(
       'secure', '[DECRYPT]', 'All pending vetting requests decrypted and cleared.', user.name
     );
-    io.emit('comms:new', db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 1').get());
+    io?.emit('comms:new', db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 1').get());
 
     res.json({ recruits });
   });

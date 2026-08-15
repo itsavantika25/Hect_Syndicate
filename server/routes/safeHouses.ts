@@ -5,7 +5,7 @@ import type { Server as SocketServer } from 'socket.io';
 
 const router = Router();
 
-export function createSafeHousesRouter(io: SocketServer) {
+export function createSafeHousesRouter(io: SocketServer | null) {
   router.get('/', authMiddleware, (_req, res) => {
     const rows = db.prepare('SELECT * FROM safe_houses ORDER BY id').all();
     res.json(rows);
@@ -33,7 +33,7 @@ export function createSafeHousesRouter(io: SocketServer) {
     );
 
     const log = db.prepare('SELECT * FROM comms_logs ORDER BY id DESC LIMIT 1').get();
-    io.emit('comms:new', log);
+    io?.emit('comms:new', log);
 
     res.json({ message: msg, log });
   });
