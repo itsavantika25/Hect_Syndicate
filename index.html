@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HCET Syndicate</title>
+  <meta name="description" content="HCET Syndicate: Secure coordination portal for surviving Jedi operatives."/>
+
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/pages.css"/>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<div id="app" style="flex-direction: column;">
+
+
+  <header class="top-bar">
+    <div class="top-bar-brand">HCET SYNDICATE</div>
+    <nav class="top-nav" aria-label="Syndicate Navigation">
+      <button class="top-nav-item active" data-nav="galaxy">Dashboard</button>
+      <button class="top-nav-item" data-nav="registry">Registry</button>
+      <button class="top-nav-item" data-nav="intel">Intel</button>
+      <button class="top-nav-item" data-nav="recruit">Recruitment</button>
+      <button class="top-nav-item" data-nav="alerts">Alerts</button>
+      <button class="top-nav-item" data-nav="logs">Logs</button>
+    </nav>
+    <div class="top-bar-right">
+      <button class="btn btn-danger" style="padding: 6px 12px;" onclick="HCET.disconnect()">
+        Disconnect
+      </button>
+    </div>
+  </header>
+
+
+  <main id="main" style="width: 100%;">
+
+    <div class="page" id="page-galaxy">
+      <div style="padding: 16px 0">
+        <div class="dash-greeting">
+          Hey, <span id="op-name">OPERATIVE</span> <span id="op-role" class="role-badge operative"></span><span style="color:var(--accent)">_</span>
+        </div>
+
+        <div class="dash-grid">
+          <div class="panel panel-br">
+            <div class="panel-label">
+              <span class="panel-label-text"><span class="dot dot-green"></span>001_SYSTEM // JEDI</span>
+              <button class="panel-label-action" onclick="navigate('registry')">OPEN REGISTRY</button>
+            </div>
+            <div class="dash-jedi-list" id="dash-jedi-list">
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 0">// SYNCING REGISTRY...</div>
+            </div>
+          </div>
+
+          <div class="panel panel-br">
+            <div class="panel-label">
+              <span class="panel-label-text"><span class="dot dot-muted"></span>002_SYSTEM // GALAXY</span>
+              <button class="panel-label-action" onclick="alignGalaxyGrid()">ALIGN GRID</button>
+            </div>
+            <div class="dash-map-wrap">
+              <canvas id="galaxy-canvas" aria-label="Galaxy network map"></canvas>
+              <div id="galaxy-labels" aria-hidden="true"></div>
+              <div
+                id="map-signal"
+                aria-live="polite"
+                style="position:absolute;bottom:50%;left:50%;transform:translate(-50%,50%);
+                       font-size:11px;letter-spacing:.12em;color:var(--dim);
+                       text-align:center;pointer-events:none;transition:opacity .5s"
+              >NO SIGNAL_</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-br">
+          <div class="panel-label">
+            <span class="panel-label-text"><span class="dot dot-muted"></span>003_SYSTEM // INTEL</span>
+            <button class="panel-label-action" onclick="navigate('intel')">VIEW ALL</button>
+          </div>
+          <div class="dash-intel-list" id="dash-intel-list">
+            <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 0">// LOADING INTEL FEED...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="page" id="page-registry">
+      <div class="page-head">
+        <h1 class="page-title">SURVIVOR <span>REGISTRY</span></h1>
+        <p class="page-sub">Known operatives within the Syndicate's registry.</p>
+      </div>
+
+      <div class="registry-search panel panel-br">
+        <div class="panel-label">
+          <span class="panel-label-text"><span class="dot dot-muted"></span>SECURE QUERY INTERFACE</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div>
+              <label class="form-label" for="registry-search">Search Name/ID...</label>
+              <div class="search-field">
+                <span class="search-field-icon" aria-hidden="true">&#128269;</span>
+                <input
+                  type="search"
+                  id="registry-search"
+                  placeholder="Enter operative designation..."
+                  oninput="filterRegistry()"
+                  aria-label="Search operative name or ID"
+                />
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="registry-filter">System Filter</label>
+              <select
+                class="filter-select"
+                id="registry-filter"
+                onchange="filterRegistry()"
+                aria-label="Filter by sector"
+              >
+                <option value="">All Sectors</option>
+                <option value="outer rim">Outer Rim</option>
+                <option value="core worlds">Core Worlds</option>
+                <option value="mid rim">Mid Rim</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="registry-grid" id="registry-grid" aria-live="polite"></div>
+    </div>
+
+
+    <div class="page" id="page-intel">
+      <div class="page-head">
+        <h1 class="page-title">SYNDICATE <span>INTELLIGENCE</span></h1>
+      </div>
+
+      <div class="intel-layout">
+        <div class="intel-left">
+
+          <div class="panel panel-br">
+            <div class="panel-label">
+              <span class="panel-label-text"><span class="dot"></span>ACTIVE MISSIONS REGISTRY</span>
+              <span style="font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase">FILTER: ALL_SECTORS</span>
+            </div>
+            <div class="mission-list" id="mission-list">
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">// LOADING MISSIONS...</div>
+            </div>
+          </div>
+
+          <div class="panel panel-br">
+            <div class="stat-row">
+              <div class="stat-cell">
+                <div class="stat-label">Total Active</div>
+                <div class="stat-val" id="stat-total">--</div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-label">Critical Status</div>
+                <div class="stat-val red" id="stat-critical">--</div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-label">Operatives Deployed</div>
+                <div class="stat-val" id="stat-deployed">--</div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-label">Comms Integrity</div>
+                <div class="stat-val green" id="stat-comms">--</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="intel-right">
+
+          <div class="panel panel-br">
+            <div class="panel-label">
+              <span class="panel-label-text"><span class="dot"></span>TROOP DENSITY MAP</span>
+            </div>
+            <div class="troop-map" id="troop-map" aria-label="Imperial troop density map">
+              <div class="troop-dot"    style="left:18%;top:22%;animation-delay:0s"></div>
+              <div class="troop-dot sm" style="left:32%;top:40%;animation-delay:.4s"></div>
+              <div class="troop-dot"    style="left:55%;top:15%;animation-delay:.8s"></div>
+              <div class="troop-dot sm" style="left:70%;top:55%;animation-delay:.2s"></div>
+              <div class="troop-dot"    style="left:80%;top:30%;animation-delay:.6s"></div>
+              <div class="troop-dot sm" style="left:45%;top:68%;animation-delay:1s"></div>
+              <div class="troop-dot"    style="left:25%;top:72%;animation-delay:.3s"></div>
+              <div class="troop-dot sm" style="left:62%;top:80%;animation-delay:.7s"></div>
+              <div class="troop-label">SEC: CORUSCANT_UNDERWORLD</div>
+              <div class="troop-density">DENSITY: SEVERE</div>
+            </div>
+          </div>
+
+          <div class="panel panel-br">
+            <div class="panel-label">
+              <span class="panel-label-text">STRATEGIC PLANNING</span>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label class="form-label" for="obj-input">Objective Designation</label>
+                <input class="form-input" type="text" id="obj-input" placeholder="ENTER_TARGET_ID_"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Required Assets</label>
+                <div class="asset-tags">
+                  <button class="asset-tag" onclick="toggleAsset(this)">+ Demo_Team</button>
+                  <button class="asset-tag selected" onclick="toggleAsset(this)">Slicer_Unit</button>
+                  <button class="asset-tag" onclick="toggleAsset(this)">+ Heavy_Armor</button>
+                  <button class="asset-tag" onclick="toggleAsset(this)">+ Recon_Unit</button>
+                  <button class="asset-tag" onclick="toggleAsset(this)">+ Med_Corps</button>
+                </div>
+              </div>
+              <button class="btn-primary" onclick="initiateProtocol(this)">
+                INITIATE PROTOCOL
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="page" id="page-recruit">
+      <div class="page-head">
+        <h1 class="page-title">RECRUIT <span>VETTING</span></h1>
+        <p class="page-sub">ENCRYPTION LEVEL: OMEGA-9 // CLASSIFIED ROSTER</p>
+      </div>
+
+      <div class="recruit-layout">
+
+        <div>
+          <div class="panel panel-br" style="margin-bottom:16px">
+            <div class="panel-label">
+              <span class="panel-label-text"><span class="dot"></span>001_SYSTEM // VETTING_QUEUE</span>
+              <button class="btn btn-danger" onclick="decryptAll()">DECRYPT ALL</button>
+            </div>
+
+            <div id="vetting-queue">
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">// LOADING VETTING QUEUE...</div>
+            </div>
+
+            <div style="border-top:1px solid var(--border);padding:14px 16px">
+              <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:10px">
+                + SUBMIT NEW REQUEST
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
+                <div>
+                  <label class="form-label" for="new-req-id">Request ID</label>
+                  <input class="form-input" type="text" id="new-req-id" placeholder="REQ-XXXX_"/>
+                </div>
+                <div>
+                  <label class="form-label" for="new-req-loc">Location</label>
+                  <input class="form-input" type="text" id="new-req-loc" placeholder="SECTOR / PLANET_"/>
+                </div>
+              </div>
+              <button class="btn-primary" onclick="addRecruit()">SUBMIT REQUEST</button>
+            </div>
+          </div>
+
+          <div class="panel panel-br">
+            <div class="panel-label">
+              <span class="panel-label-text"><span class="dot dot-muted"></span>003_SYSTEM // INTERCEPTED_COMMS</span>
+              <button class="panel-label-action" onclick="purgeLogs()">PURGE LOGS</button>
+            </div>
+            <div class="log-terminal" id="comms-log" aria-live="polite">
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:8px 0">// SYNCING COMMS...</div>
+            </div>
+            <div class="terminal-input-row">
+              <span class="terminal-prompt" aria-hidden="true">&gt;</span>
+              <input
+                class="terminal-field"
+                type="text"
+                id="terminal-input"
+                placeholder="ENTER COMMAND..."
+                onkeydown="terminalCmd(event)"
+                aria-label="Terminal command input"
+                autocomplete="off"
+              />
+              <span class="terminal-cursor" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel panel-br">
+            <div class="panel-label">
+              <span class="panel-label-text"><span class="dot dot-green"></span>002_SYSTEM // SAFE_HOUSES</span>
+            </div>
+
+            <div style="padding:4px 0" id="safe-houses-list">
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">// LOADING SAFE HOUSES...</div>
+            </div>
+
+            <div style="padding:10px 14px;border-top:1px solid var(--border);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)">
+              GRID ALIGNMENT: NOMINAL
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="page" id="page-alerts">
+      <div class="page-head">
+        <h1 class="page-title">SYSTEM <span>ALERTS</span></h1>
+        <p class="page-sub">Active threat indicators // Priority: HIGH</p>
+      </div>
+      <div class="panel panel-br">
+        <div class="panel-label">
+          <span class="panel-label-text"><span class="dot"></span>LIVE ALERT FEED</span>
+          <span style="font-size:10px;letter-spacing:.1em;color:var(--red);text-transform:uppercase;animation:blink 1s step-end infinite">
+            LIVE FEED
+          </span>
+        </div>
+        <div id="alert-feed" aria-live="polite">
+          <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">// LOADING ALERTS...</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="page" id="page-logs">
+      <div class="page-head">
+        <h1 class="page-title">SYSTEM <span>LOGS</span></h1>
+        <p class="page-sub">Encrypted activity ledger // Session 7741-ECHO</p>
+      </div>
+      <div class="panel panel-br">
+        <div class="panel-label">
+          <span class="panel-label-text"><span class="dot dot-green"></span>SESSION LOG — READ-ONLY</span>
+          <button class="panel-label-action" onclick="exportSystemLogs()">EXPORT</button>
+        </div>
+        <div class="log-terminal" style="max-height:70vh;font-size:11px" id="system-log" aria-live="polite">
+          <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:8px 0">// LOADING SESSION LOG...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/api.js"></script>
+<script src="js/stars.js"></script>
+<script src="js/galaxy-map.js"></script>
+<script src="js/registry.js"></script>
+<script src="js/terminal.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

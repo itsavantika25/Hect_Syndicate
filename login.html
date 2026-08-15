@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HCET Syndicate</title>
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      position: relative;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      margin: var(--sp-md);
+      animation: fade-in 0.4s ease both;
+    }
+    .auth-banner {
+      color: var(--red);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: var(--sp-md);
+      font-weight: 700;
+      animation: blink 2s infinite;
+    }
+    .hint-box {
+      font-size: 11px;
+      color: var(--muted);
+      border-top: 1px dashed var(--border-hi);
+      padding-top: var(--sp-md);
+      margin-top: var(--sp-md);
+      line-height: 1.6;
+    }
+    .hint-box strong {
+      color: var(--green);
+    }
+    .error-msg {
+      color: var(--red);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      margin-top: var(--sp-sm);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars-canvas"></canvas>
+
+  <div class="login-container">
+    <div class="auth-banner">WARNING: UN-AUTHORIZED DECRYPTION DETECTED </div>
+
+    <div class="panel panel-br">
+      <div class="panel-label">
+        <span class="panel-label-text">
+          <span class="dot"></span>000_SECURITY // IDENTITY_GATE
+        </span>
+      </div>
+      <div class="panel-body">
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="jedi-id">Username</label>
+            <input class="form-input" type="text" id="jedi-id" required autocomplete="off"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="security-key">Passkey</label>
+            <input class="form-input" type="password" id="security-key" placeholder="••••••••" required autocomplete="off"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="verification-code">Verification Code</label>
+            <input class="form-input" type="text" id="verification-code" placeholder="XXXXXX" maxlength="6" pattern="[0-9]{6}" required autocomplete="off"/>
+          </div>
+
+          <div class="error-msg" id="error-msg">ACCESS DENIED: INVALID SECURITY TOKEN OR KEY SIGNATURE.</div>
+
+          <button class="btn-primary" type="submit" id="login-btn" style="margin-top: var(--sp-md);">
+            DECRYPT CHANNEL &nbsp;➔
+          </button>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/stars.js"></script>
+  <script>
+    if (HCET.isAuthenticated()) {
+      window.location.href = 'index.html';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const idInput = document.getElementById('jedi-id').value.trim();
+      const passInput = document.getElementById('security-key').value;
+      const codeInput = document.getElementById('verification-code').value;
+      const errorMsg = document.getElementById('error-msg');
+      const btn = document.getElementById('login-btn');
+
+      btn.disabled = true;
+      btn.textContent = 'DECRYPTING...';
+
+      try {
+        await HCET.login(idInput, passInput, codeInput);
+        window.location.href = 'index.html';
+      } catch (err) {
+        errorMsg.textContent = err.message || 'ACCESS DENIED: INVALID SECURITY TOKEN OR KEY SIGNATURE.';
+        errorMsg.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = 'DECRYPT CHANNEL &nbsp;➔';
+      }
+    }
+  </script>
+</body>
+</html>
