@@ -7,6 +7,7 @@
     "dev": "tsx watch server/index.ts",
     "start": "tsx server/index.ts",
     "build": "tsc",
+    "vercel-build": "tsc && node scripts/prepare-vercel-output.mjs",
     "seed": "tsx server/seed.ts"
   },
   "dependencies": {
