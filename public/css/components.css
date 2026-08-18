@@ -328,3 +328,25 @@
   margin-top: 4px;
   text-transform: uppercase;
 }
+
+#alert-feed {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.alert-row {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.alert-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert-title,
+.alert-desc,
+.alert-meta {
+  overflow-wrap: break-word;
+}

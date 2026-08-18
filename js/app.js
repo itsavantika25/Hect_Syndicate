@@ -204,7 +204,7 @@ async function renderAlerts() {
         <div class="alert-body">
           <div class="alert-title" ${a.priority === 'critical' ? 'style="color:var(--red)"' : ''}>${a.title}</div>
           <div class="alert-desc">${a.description}</div>
-          <div class="alert-meta" data-expires-at="${a.expires_at || ''}" data-priority="${a.priority}">${a.tMinus}
+          <div class="alert-meta" data-expires-at="${a.expires_at || ''}" data-priority="${a.priority}">${a.tMinus}</div>
         </div>
       </div>`).join('');
   } catch (err) {
