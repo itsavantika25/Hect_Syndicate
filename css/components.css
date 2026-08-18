@@ -354,3 +354,32 @@
   overflow-wrap: break-word;
   word-break: normal;
 }
+
+
+#page-alerts #alert-feed {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#page-alerts #alert-feed .alert-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+
+  box-sizing: border-box !important;
+  flex: none !important;
+
+  gap: 14px;
+  padding: 14px 16px;
+}
+
+#page-alerts #alert-feed .alert-body {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
