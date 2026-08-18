@@ -328,3 +328,29 @@
   margin-top: 4px;
   text-transform: uppercase;
 }
+
+#alert-feed {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100%;
+  min-width: 0;
+}
+
+.alert-row {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  flex: none;
+}
+
+.alert-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert-title,
+.alert-desc,
+.alert-meta {
+  overflow-wrap: break-word;
+  word-break: normal;
+}

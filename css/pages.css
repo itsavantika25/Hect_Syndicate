@@ -241,9 +241,6 @@
   color: var(--muted);
 }
 
-/* ════════════════════════════════════
-   MISSION BRIEFS / INTEL
-════════════════════════════════════ */
 .intel-layout {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -329,9 +326,7 @@
 .troop-label   { position: absolute; bottom: 10px; left: 12px;  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .troop-density { position: absolute; bottom: 10px; right: 12px; font-size: 10px; letter-spacing: 0.1em; padding: 2px 8px; border: 1px solid var(--red); color: var(--red); background: rgba(141,29,37,0.35); }
 
-/* ════════════════════════════════════
-   RECRUIT VETTING
-════════════════════════════════════ */
+
 .recruit-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -405,9 +400,6 @@
 .sh-btn.locked { border-color: var(--dim); color: var(--dim); cursor: not-allowed; }
 .sh-btn.locked:hover { border-color: var(--dim); color: var(--dim); background: transparent; }
 
-/* ════════════════════════════════════
-   RESPONSIVE OVERRIDES
-════════════════════════════════════ */
 @media (max-width: 1024px) {
   .intel-layout,
   .recruit-layout,
