@@ -21,7 +21,6 @@ function chipClass(status) {
   return map[status] || 'pending';
 }
 
-/* ── Page navigation ─────────────────────────────────────────── */
 function navigate(pageId) {
   if (!HCET.isAuthenticated()) {
     window.location.href = 'login.html';
@@ -96,7 +95,6 @@ function updatePresenceBadge({ count, users }) {
   window.updateGalaxyPresence?.(users || []);
 }
 
-/* ── Dashboard Jedi list ─────────────────────────────────────── */
 async function renderDashboardJedi() {
   const container = document.getElementById('dash-jedi-list');
   if (!container) return;
@@ -113,7 +111,6 @@ async function renderDashboardJedi() {
   }
 }
 
-/* ── Intel feed ──────────────────────────────────────────────── */
 async function renderIntelFeed() {
   const container = document.getElementById('dash-intel-list');
   if (!container) return;
@@ -156,7 +153,6 @@ function tickIntelCountdowns() {
   });
 }
 
-/* ── Missions ────────────────────────────────────────────────── */
 async function renderMissions() {
   const container = document.getElementById('mission-list');
   if (!container) return;
@@ -178,7 +174,6 @@ async function renderMissions() {
   }
 }
 
-/* ── Stats ───────────────────────────────────────────────────── */
 async function renderStats() {
   try {
     const stats = await HCET.getStats();
@@ -197,7 +192,6 @@ async function renderStats() {
   }
 }
 
-/* ── Alerts ──────────────────────────────────────────────────── */
 async function renderAlerts() {
   const container = document.getElementById('alert-feed');
   if (!container) return;
@@ -210,7 +204,7 @@ async function renderAlerts() {
         <div class="alert-body">
           <div class="alert-title" ${a.priority === 'critical' ? 'style="color:var(--red)"' : ''}>${a.title}</div>
           <div class="alert-desc">${a.description}</div>
-          <div class="alert-meta" data-expires-at="${a.expires_at || ''}" data-priority="${a.priority}">${a.tMinus} // PRIORITY: ${a.priority.toUpperCase()}</div>
+          <div class="alert-meta" data-expires-at="${a.expires_at || ''}" data-priority="${a.priority}">${a.tMinus}
         </div>
       </div>`).join('');
   } catch (err) {
@@ -218,7 +212,6 @@ async function renderAlerts() {
   }
 }
 
-/* ── System logs ─────────────────────────────────────────────── */
 async function renderSystemLogs() {
   const container = document.getElementById('system-log');
   if (!container) return;
@@ -241,7 +234,6 @@ async function renderSystemLogs() {
   }
 }
 
-/* ── Troop density map ───────────────────────────────────────── */
 function renderTroopMap(operatives) {
   const container = document.getElementById('troop-map');
   if (!container) return;
@@ -330,7 +322,6 @@ async function renderSafeHouses() {
   }
 }
 
-/* ── Load all data ───────────────────────────────────────────── */
 async function loadAllData() {
   operativesCache = await HCET.getOperatives().catch(() => []);
   window.JEDI_DATA = operativesCache.map(o => ({
@@ -359,7 +350,6 @@ async function loadAllData() {
   renderTroopMap(operativesCache);
 }
 
-/* ── Real-time handlers ──────────────────────────────────────── */
 function setupRealtime() {
   HCET.on('presence:update', updatePresenceBadge);
   HCET.on('operative:updated', () => loadAllData());
@@ -375,7 +365,6 @@ function setupRealtime() {
   });
 }
 
-/* ── Init ────────────────────────────────────────────────────── */
 document.querySelectorAll('.top-nav-item[data-nav]').forEach(btn => {
   btn.addEventListener('click', () => navigate(btn.dataset.nav));
 });
