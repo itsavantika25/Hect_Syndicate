@@ -310,7 +310,7 @@ async function renderSafeHouses() {
       <div class="safe-house-card">
         <div class="sh-name">${h.name}</div>
         <div class="sh-status">STATUS: ${h.status}</div>
-        <div class="sh-cap">CAPACITY: ${h.occupancy}/${h.capacity}</div>
+        <div class="sh-cap">OCCUPANCY: ${h.occupancy}/${h.capacity}</div>
         <div style="margin-top:10px">
           ${h.routable ? `<div class="seg-bar" style="margin-bottom:10px">${buildSegBar(h.occupancy, h.capacity)}</div>
           <button class="sh-btn" onclick="routeToOutpost(${h.id}, '${h.name.replace(/'/g, "\\'")}')">ROUTE</button>` :

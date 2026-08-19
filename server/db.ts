@@ -186,9 +186,9 @@ export function seedDatabase() {
   `);
 
   const recruits = [
-    ['REQ-8819A', 'OUTER RIM // TARIS', 3, 'pending'],
-    ['REQ-3320B', 'CORE // CORUSCANT L-13', 4, 'compromised'],
-    ['REQ-9912C', 'UNKNOWN // SECTOR 4', 5, 'secure'],
+    ['REQ-8819A', 'RIM TARIS', 3, 'pending'],
+    ['REQ-3320B', 'CORUSCANT L-13', 4, 'compromised'],
+    ['REQ-9912C', 'SECTOR 4', 5, 'secure'],
   ];
 
   for (const r of recruits) {
@@ -200,9 +200,9 @@ export function seedDatabase() {
   `);
 
   const safeHouses = [
-    ['OUTPOST AURORA', 'ACTIVE // COVERT', 12, 8, 1],
-    ['ECHO BASE SUB-LEVEL', 'OFFLINE // MAINT', 50, 0, 0],
-    ['HAVEN THETA-7', 'ACTIVE // COVERT', 40, 23, 1],
+    ['OUTPOST AURORA', 'ACTIVE * COVERT', 12, 8, 1],
+    ['ECHO BASE SUB-LEVEL', 'OFFLINE * MAINT', 50, 0, 0],
+    ['HAVEN THETA-7', 'ACTIVE * COVERT', 40, 23, 1],
   ];
 
   for (const sh of safeHouses) {
