@@ -1,5 +1,10 @@
 
-@import url("https://fonts.googleapis.com/css2?family=Anybody:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap");
+@font-face {
+  font-family: 'Astera';
+  src: url('/astera.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
 
 :root {
   --bg:           #000000;
@@ -32,7 +37,7 @@
   --accent-glow:  var(--green-glow);
   --accent-solid: #2a4e3c;
 
-  --font-head:    'Anybody', sans-serif;
+  --font-head:    'Astera', sans-serif;
   --font-mono:    'Space Mono', monospace;
 
   --sp-xs:   4px;
