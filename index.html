@@ -48,17 +48,17 @@
         <div class="dash-grid">
           <div class="panel panel-br">
             <div class="panel-label">
-              <span class="panel-label-text"><span class="dot dot-green"></span>001_SYSTEM // JEDI</span>
+              <span class="panel-label-text"><span class="dot dot-green"></span>001_SYSTEM</span>
               <button class="panel-label-action" onclick="navigate('registry')">OPEN REGISTRY</button>
             </div>
             <div class="dash-jedi-list" id="dash-jedi-list">
-              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 0">// SYNCING REGISTRY...</div>
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 0">SYNCING REGISTRY...</div>
             </div>
           </div>
 
           <div class="panel panel-br">
             <div class="panel-label">
-              <span class="panel-label-text"><span class="dot dot-muted"></span>002_SYSTEM // GALAXY</span>
+              <span class="panel-label-text"><span class="dot dot-muted"></span>002_SYSTEM</span>
               <button class="panel-label-action" onclick="alignGalaxyGrid()">ALIGN GRID</button>
             </div>
             <div class="dash-map-wrap">
@@ -77,11 +77,11 @@
 
         <div class="panel panel-br">
           <div class="panel-label">
-            <span class="panel-label-text"><span class="dot dot-muted"></span>003_SYSTEM // INTEL</span>
+            <span class="panel-label-text"><span class="dot dot-muted"></span>003_SYSTEM</span>
             <button class="panel-label-action" onclick="navigate('intel')">VIEW ALL</button>
           </div>
           <div class="dash-intel-list" id="dash-intel-list">
-            <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 0">// LOADING INTEL FEED...</div>
+            <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 0">LOADING INTEL FEED...</div>
           </div>
         </div>
       </div>
@@ -150,7 +150,7 @@
               <span style="font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase">FILTER: ALL_SECTORS</span>
             </div>
             <div class="mission-list" id="mission-list">
-              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">// LOADING MISSIONS...</div>
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">LOADING MISSIONS...</div>
             </div>
           </div>
 
@@ -230,7 +230,7 @@
     <div class="page" id="page-recruit">
       <div class="page-head">
         <h1 class="page-title">RECRUIT <span>VETTING</span></h1>
-        <p class="page-sub">ENCRYPTION LEVEL: OMEGA-9 // CLASSIFIED ROSTER</p>
+        
       </div>
 
       <div class="recruit-layout">
@@ -238,12 +238,12 @@
         <div>
           <div class="panel panel-br" style="margin-bottom:16px">
             <div class="panel-label">
-              <span class="panel-label-text"><span class="dot"></span>001_SYSTEM // VETTING_QUEUE</span>
+              <span class="panel-label-text"><span class="dot"></span>VETTING_QUEUE</span>
               <button class="btn btn-danger" onclick="decryptAll()">DECRYPT ALL</button>
             </div>
 
             <div id="vetting-queue">
-              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">// LOADING VETTING QUEUE...</div>
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">LOADING VETTING QUEUE...</div>
             </div>
 
             <div style="border-top:1px solid var(--border);padding:14px 16px">
@@ -266,11 +266,11 @@
 
           <div class="panel panel-br">
             <div class="panel-label">
-              <span class="panel-label-text"><span class="dot dot-muted"></span>003_SYSTEM // INTERCEPTED_COMMS</span>
+              <span class="panel-label-text"><span class="dot dot-muted"></span>INTERCEPTED_COMMS</span>
               <button class="panel-label-action" onclick="purgeLogs()">PURGE LOGS</button>
             </div>
             <div class="log-terminal" id="comms-log" aria-live="polite">
-              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:8px 0">// SYNCING COMMS...</div>
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:8px 0">SYNCING COMMS...</div>
             </div>
             <div class="terminal-input-row">
               <span class="terminal-prompt" aria-hidden="true">&gt;</span>
@@ -291,11 +291,11 @@
         <div>
           <div class="panel panel-br">
             <div class="panel-label">
-              <span class="panel-label-text"><span class="dot dot-green"></span>002_SYSTEM // SAFE_HOUSES</span>
+              <span class="panel-label-text"><span class="dot dot-green"></span>SAFE_HOUSES</span>
             </div>
 
             <div style="padding:4px 0" id="safe-houses-list">
-              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">// LOADING SAFE HOUSES...</div>
+              <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">LOADING SAFE HOUSES...</div>
             </div>
 
             <div style="padding:10px 14px;border-top:1px solid var(--border);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)">
@@ -311,7 +311,6 @@
     <div class="page" id="page-alerts">
       <div class="page-head">
         <h1 class="page-title">SYSTEM <span>ALERTS</span></h1>
-        <p class="page-sub">Active threat indicators // Priority: HIGH</p>
       </div>
       <div class="panel panel-br">
         <div class="panel-label">
@@ -321,7 +320,7 @@
           </span>
         </div>
         <div id="alert-feed" aria-live="polite">
-          <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">// LOADING ALERTS...</div>
+          <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:12px 16px">LOADING ALERTS...</div>
         </div>
       </div>
     </div>
@@ -330,7 +329,6 @@
     <div class="page" id="page-logs">
       <div class="page-head">
         <h1 class="page-title">SYSTEM <span>LOGS</span></h1>
-        <p class="page-sub">Encrypted activity ledger // Session 7741-ECHO</p>
       </div>
       <div class="panel panel-br">
         <div class="panel-label">
@@ -338,7 +336,7 @@
           <button class="panel-label-action" onclick="exportSystemLogs()">EXPORT</button>
         </div>
         <div class="log-terminal" style="max-height:70vh;font-size:11px" id="system-log" aria-live="polite">
-          <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:8px 0">// LOADING SESSION LOG...</div>
+          <div style="color:var(--dim);font-size:11px;letter-spacing:.1em;padding:8px 0">LOADING SESSION LOG...</div>
         </div>
       </div>
     </div>
